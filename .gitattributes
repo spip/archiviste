@@ -1,0 +1,14 @@
+* text=auto !eol
+inc/archives.php -text
+inc/pcltar.php -text
+inc/pclzip.php -text
+lib/pcltar/pclerror.lib.php -text
+lib/pcltar/pcltrace.lib.php -text
+lib/pcltar/readme.txt -text
+/paquet.xml -text
+tests/TestCase.inc -text
+tests/deballer_archives.php -text
+tests/emballer_archives.php -text
+tests/informer_archives.php -text
+tests/initialiser_archives.php -text
+tests/retirer_archives.php -text

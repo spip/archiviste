@@ -1,0 +1,15 @@
+<paquet
+    prefix="archiviste"
+    categorie="outil"
+    version="0.1.1"
+    etat="dev"
+    compatibilite="[3.2.0-dev;]"
+>   
+
+    <nom>Archiviste</nom>
+    <!-- Compression Zip, Tar, ... -->
+
+    <auteur>Collectif SPIP</auteur>
+
+    <licence lien="http://www.gnu.org/licenses/gpl-3.0.html">GPL</licence>
+</paquet>
