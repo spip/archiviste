@@ -2,6 +2,7 @@
 inc/archives.php -text
 inc/pcltar.php -text
 inc/pclzip.php -text
+lang/paquet-archiviste.xml -text
 lang/paquet-archiviste_fr.php -text
 lib/pcltar/pclerror.lib.php -text
 lib/pcltar/pcltrace.lib.php -text
