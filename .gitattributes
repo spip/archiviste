@@ -12,8 +12,8 @@ prive/themes/spip/images/archiviste-128.png -text
 prive/themes/spip/images/archiviste-32.png -text
 prive/themes/spip/images/archiviste-64.png -text
 tests/TestCase.inc -text
-tests/deballer_archives.php -text
-tests/emballer_archives.php -text
-tests/informer_archives.php -text
+tests/_todo_deballer_archives.php -text
+tests/_todo_emballer_archives.php -text
+tests/_todo_informer_archives.php -text
+tests/_todo_retirer_archives.php -text
 tests/initialiser_archives.php -text
-tests/retirer_archives.php -text
