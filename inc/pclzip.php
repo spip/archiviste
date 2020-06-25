@@ -387,16 +387,11 @@ class PclZip {
 		// ----- For each file in the list check the attributes
 		$v_supported_attributes
 			= array(
-			PCLZIP_ATT_FILE_NAME => 'mandatory'
-		,
-			PCLZIP_ATT_FILE_NEW_SHORT_NAME => 'optional'
-		,
-			PCLZIP_ATT_FILE_NEW_FULL_NAME => 'optional'
-		,
-			PCLZIP_ATT_FILE_MTIME => 'optional'
-		,
-			PCLZIP_ATT_FILE_CONTENT => 'optional'
-		,
+			PCLZIP_ATT_FILE_NAME => 'mandatory',
+			PCLZIP_ATT_FILE_NEW_SHORT_NAME => 'optional',
+			PCLZIP_ATT_FILE_NEW_FULL_NAME => 'optional',
+			PCLZIP_ATT_FILE_MTIME => 'optional',
+			PCLZIP_ATT_FILE_CONTENT => 'optional',
 			PCLZIP_ATT_FILE_COMMENT => 'optional'
 		);
 		foreach ($v_att_list as $v_entry) {
@@ -575,16 +570,11 @@ class PclZip {
 		// ----- For each file in the list check the attributes
 		$v_supported_attributes
 			= array(
-			PCLZIP_ATT_FILE_NAME => 'mandatory'
-		,
-			PCLZIP_ATT_FILE_NEW_SHORT_NAME => 'optional'
-		,
-			PCLZIP_ATT_FILE_NEW_FULL_NAME => 'optional'
-		,
-			PCLZIP_ATT_FILE_MTIME => 'optional'
-		,
-			PCLZIP_ATT_FILE_CONTENT => 'optional'
-		,
+			PCLZIP_ATT_FILE_NAME => 'mandatory',
+			PCLZIP_ATT_FILE_NEW_SHORT_NAME => 'optional',
+			PCLZIP_ATT_FILE_NEW_FULL_NAME => 'optional',
+			PCLZIP_ATT_FILE_MTIME => 'optional',
+			PCLZIP_ATT_FILE_CONTENT => 'optional',
 			PCLZIP_ATT_FILE_COMMENT => 'optional'
 		);
 		foreach ($v_att_list as $v_entry) {
@@ -1305,10 +1295,8 @@ class PclZip {
 			PCLZIP_ERR_MISSING_OPTION_VALUE => 'PCLZIP_ERR_MISSING_OPTION_VALUE',
 			PCLZIP_ERR_INVALID_OPTION_VALUE => 'PCLZIP_ERR_INVALID_OPTION_VALUE',
 			PCLZIP_ERR_UNSUPPORTED_COMPRESSION => 'PCLZIP_ERR_UNSUPPORTED_COMPRESSION',
-			PCLZIP_ERR_UNSUPPORTED_ENCRYPTION => 'PCLZIP_ERR_UNSUPPORTED_ENCRYPTION'
-		,
-			PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE => 'PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE'
-		,
+			PCLZIP_ERR_UNSUPPORTED_ENCRYPTION => 'PCLZIP_ERR_UNSUPPORTED_ENCRYPTION',
+			PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE => 'PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE',
 			PCLZIP_ERR_DIRECTORY_RESTRICTION => 'PCLZIP_ERR_DIRECTORY_RESTRICTION'
 		);
 
@@ -1761,12 +1749,12 @@ class PclZip {
 				case PCLZIP_CB_POST_EXTRACT :
 				case PCLZIP_CB_PRE_ADD :
 				case PCLZIP_CB_POST_ADD :
-					/* for futur use
-        case PCLZIP_CB_PRE_DELETE :
-        case PCLZIP_CB_POST_DELETE :
-        case PCLZIP_CB_PRE_LIST :
-        case PCLZIP_CB_POST_LIST :
-        */
+				/* for futur use
+				case PCLZIP_CB_PRE_DELETE :
+				case PCLZIP_CB_POST_DELETE :
+				case PCLZIP_CB_PRE_LIST :
+				case PCLZIP_CB_POST_LIST :
+				*/
 					// ----- Check the number of parameters
 					if (($i + 1) >= $p_size) {
 						// ----- Error log
