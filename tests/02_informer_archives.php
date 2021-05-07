@@ -29,10 +29,12 @@ $archive = new SpipArchives($fichier);
 
 $infos = $archive->informer();
 if (!$infos) {
+	var_dump($archive->erreur(),$archive->message());
 	archiviste_finir_test("Echec archive->informer()", $destination);
 }
 
 if (empty($infos['fichiers'])) {
+	var_dump($infos);
 	archiviste_finir_test("Entree fichiers manquante dans archive->informer()", $destination);
 }
 
@@ -47,10 +49,12 @@ if (!archiviste_trouver_fichier('sousrep/fichier', $infos['fichiers'])) {
 }
 
 if (empty($infos['proprietes'])) {
+	var_dump($infos);
 	archiviste_finir_test("Entree proprietes manquante dans archive->informer()", $destination);
 }
 
 if ($infos['proprietes']['racine'] !== '') {
+	var_dump($infos);
 	archiviste_finir_test("Entree proprietes/racine incorrecte dans archive->informer()", $destination);
 }
 
