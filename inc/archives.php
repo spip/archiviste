@@ -287,6 +287,24 @@ class SpipArchives
 			return false;
 		}
 
+		if ($this->codeErreur !== 0) {
+			return false;
+		}
+
+		switch ($this->modeCompression) {
+			case 'zip':
+				include_spip('inc/pclzip');
+				$zip = new \PclZip($this->fichierArchive);
+				$ok = $zip->delete(PCLZIP_OPT_BY_NAME, $fichiers);
+				if (!$ok or $zip->error_code < 0) {
+					$this->codeErreur = 1;
+					$this->messageErreur = "retirer() : Echec retirer fichiers ".json_encode($fichiers). " " . $zip->error_code . ' pour paquet: ' . $this->fichierArchive;
+					return false;
+				}
+				break;
+		}
+
+
 		$this->codeErreur = 0;
 		return true;
 	}
