@@ -58,13 +58,5 @@ if ($infos['proprietes']['racine'] !== '') {
 	archiviste_finir_test("Entree proprietes/racine incorrecte dans archive->informer()", $destination);
 }
 
-function archiviste_trouver_fichier($fileName, $files) {
-	foreach ($files as $file) {
-		if ($file['filename'] === $fileName) {
-			return $file;
-		}
-	}
-	return false;
-}
 
 archiviste_finir_test(false, $destination);
