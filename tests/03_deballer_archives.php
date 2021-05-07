@@ -26,34 +26,6 @@ archiviste_generer_zip_de_test($fichier);
 
 $destination = archiviste_repertoire_de_test();
 
-
-$archive = new SpipArchives($fichier);
-if (!$archive->deballer($destination, array('test.txt'))) {
-	archiviste_finir_test("Echec deballer [test.txt]", $destination);
-}
-
-if (!file_exists($f = $destination . '/test.txt')) {
-	archiviste_finir_test("Fichier $f absent", $destination);
-}
-if (file_exists($f = $destination . '/sousrep/fichier')) {
-	archiviste_finir_test("Fichier $f present mais pas demande", $destination);
-}
-
-archiviste_nettoyer_contenu_de_test(archiviste_contenu_de_test(), $destination);
-if (!$archive->deballer($destination)){
-	archiviste_finir_test("Echec deballer", $destination);
-}
-if (!file_exists($f = $destination . '/test.txt')) {
-	archiviste_finir_test("Fichier $f absent", $destination);
-}
-if (!file_exists($f = $destination . '/sousrep/fichier')) {
-	archiviste_finir_test("Fichier $f absent", $destination);
-}
-
-archiviste_nettoyer_contenu_de_test(archiviste_contenu_de_test(), $destination);
-if ($archive->deballer($destination, ['fichierinexistant.truc'])
-  or !$archive->erreur()){
-	archiviste_finir_test("Echec deballer fichierinexistant.truc, erreur attendue", $destination);
-}
+archiviste_teste_deballer($fichier);
 
 archiviste_finir_test(false, $destination);

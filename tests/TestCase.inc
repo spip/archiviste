@@ -124,3 +124,43 @@ function archiviste_finir_test($erreur, $destination) {
 		die($erreur);
 	}
 }
+
+function archiviste_teste_deballer($fichier) {
+	$destination = archiviste_repertoire_de_test();
+
+
+	$archive = new Spip\Archives\SpipArchives($fichier);
+	if (!$archive->deballer($destination, array('test.txt'))) {
+		archiviste_finir_test("Echec deballer [test.txt]", $destination);
+	}
+
+	if (!file_exists($f = $destination . '/test.txt')) {
+		archiviste_finir_test("Fichier $f absent", $destination);
+	}
+	if (file_exists($f = $destination . '/sousrep/fichier')) {
+		archiviste_finir_test("Fichier $f present mais pas demande", $destination);
+	}
+
+	archiviste_nettoyer_contenu_de_test(archiviste_contenu_de_test(), $destination);
+	if (!$archive->deballer($destination)){
+		archiviste_finir_test("Echec deballer", $destination);
+	}
+	if (!file_exists($f = $destination . '/test.txt')) {
+		archiviste_finir_test("Fichier $f absent", $destination);
+	}
+	if (!file_exists($f = $destination . '/sousrep/fichier')) {
+		archiviste_finir_test("Fichier $f absent", $destination);
+	}
+
+	archiviste_nettoyer_contenu_de_test(archiviste_contenu_de_test(), $destination);
+
+}
+
+function archiviste_trouver_fichier($fileName, $files) {
+	foreach ($files as $file) {
+		if ($file['filename'] === $fileName) {
+			return $file;
+		}
+	}
+	return false;
+}
