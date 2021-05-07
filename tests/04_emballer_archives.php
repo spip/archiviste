@@ -20,8 +20,25 @@ archiviste_nettoyer_environnement_test();
 
 include_spip('inc/archives');
 
-$ok = false;
+$fichier = archiviste_fichier_de_test('zip');
+$files_list = archiviste_generer_contenu_de_test(archiviste_contenu_de_test());
+$destination = archiviste_repertoire_de_test() . '/';
 
-if ($ok) {
-	echo 'OK';
+$archive = new SpipArchives($fichier);
+if (!$archive->emballer($files_list)) {
+	var_dump($archive->erreur(),$archive->message());
+	archiviste_finir_test("Echec emballer ".json_encode($files_list), $destination);
 }
+
+archiviste_nettoyer_contenu_de_test(archiviste_contenu_de_test(), $destination);
+
+$infos = $archive->informer();
+if (!$infos or count($infos['fichiers']) !== count($files_list)) {
+	var_dump($infos);
+	archiviste_finir_test("Echec emballer : nombre de fichiers incorrects", $destination);
+}
+
+archiviste_teste_deballer($fichier);
+
+
+archiviste_finir_test(false, $destination);

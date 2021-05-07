@@ -43,6 +43,7 @@ class SpipArchives
 		3 => 'fichier_absent',
 		4 => 'fichier_lecture_seule',
 		5 => 'destination_inaccessible',
+		6 => 'fichier_deja_existant',
 	);
 
 	/**
@@ -98,7 +99,7 @@ class SpipArchives
 		}
 
 		// trouver la racine des fichiers
-		$res['proprietes']['racine'] = $this->trouver_racine($res['fichiers']);
+		$res['proprietes']['racine'] = $this->trouver_racine(array_column($res['fichiers'], 'stored_filename'));
 
 		return $res;
 	}
@@ -111,14 +112,14 @@ class SpipArchives
 	 * @return string
 	 *     Chemin commun entre tous les fichiers
 	 **/
-	protected function trouver_racine($list) {
+	protected function trouver_racine($path_list) {
 		// on cherche la plus longue racine commune a tous les fichiers
 		// pour l'enlever au deballage
 		$max_n = 999999;
 		$paths = array();
-		foreach ($list as $n) {
+		foreach ($path_list as $path) {
 			$p = array();
-			foreach (explode('/', $n['filename']) as $n => $x) {
+			foreach (explode('/', $path) as $n => $x) {
 				if ($n > $max_n) {
 					continue;
 				}
@@ -238,6 +239,35 @@ class SpipArchives
 		if ($this->lectureSeule) {
 			$this->codeErreur = 4;
 			return false;
+		}
+
+		// le fichier ne doit pas deja exister (c'est une creation)
+		if ($this->codeErreur !== 3) {
+			$this->codeErreur = 6;
+			return false;
+		}
+
+		switch ($this->modeCompression) {
+			case 'zip':
+				include_spip('inc/pclzip');
+				$zip = new \PclZip($this->fichierArchive);
+
+				$racine = $this->trouver_racine($fichiers);
+
+				$v_list = $zip->create(
+					$fichiers,
+					PCLZIP_OPT_REMOVE_PATH,
+					$racine,
+					PCLZIP_OPT_ADD_PATH,
+					''
+				);
+				if (!$v_list or $zip->error_code < 0) {
+					$this->codeErreur = 1;
+					$this->messageErreur = "emballer() : Echec creation du zip " . $zip->error_code . ' pour paquet: ' . $this->fichierArchive;
+					return false;
+				}
+
+				break;
 		}
 
 		$this->codeErreur = 0;
