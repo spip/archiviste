@@ -4,7 +4,7 @@
  * Cas de tests pour SpipArchives
  */
 
-function inconnu()
+function archiviste_inconnu()
 {
     static $inconnu = '';
 
@@ -15,31 +15,31 @@ function inconnu()
     return $inconnu;
 }
 
-function repertoire_de_test()
+function archiviste_repertoire_de_test()
 {
-    return _NOM_TEMPORAIRES_INACCESSIBLES . 'archive_dir_test' . inconnu();
+    return _NOM_TEMPORAIRES_INACCESSIBLES . 'archive_dir_test' . archiviste_inconnu();
 }
 
-function definir_fichiers_de_test()
+function archiviste_definir_fichiers_de_test()
 {
     $fichiers_de_test = array(
         'sans_extension' => 'archives_test',
-        'extension_inconnue' => 'archives_test.' . inconnu(),
-        'zip' => 'archives_test' . inconnu() . '.zip',
+        'extension_inconnue' => 'archives_test.' . archiviste_inconnu(),
+        'zip' => 'archives_test' . archiviste_inconnu() . '.zip',
         'faux_amis' => 'fichier_test_zip',
     );
 
     return $fichiers_de_test;
 }
 
-function fichier_de_test($case)
+function archiviste_fichier_de_test($case)
 {
-    $fichiers = definir_fichiers_de_test();
+    $fichiers = archiviste_definir_fichiers_de_test();
 
     return _NOM_TEMPORAIRES_INACCESSIBLES . $fichiers[$case];
 }
 
-function contenu_de_test()
+function archiviste_contenu_de_test()
 {
     return array(
         'test.txt' => 'contenu de test',
@@ -49,32 +49,78 @@ function contenu_de_test()
     );
 }
 
-function nettoyer_environnement_test()
+function archiviste_nettoyer_environnement_test()
 {
-    foreach (definir_fichiers_de_test() as $case => $nom_fichier) {
-        if (is_file(fichier_de_test($case))) {
-            unlink(fichier_de_test($case));
+    foreach (archiviste_definir_fichiers_de_test() as $case => $nom_fichier) {
+        if (is_file(archiviste_fichier_de_test($case))) {
+            unlink(archiviste_fichier_de_test($case));
         }
     }
 
-    nettoyer_contenu_de_test(contenu_de_test());
-    @rmdir(repertoire_de_test());
+    archiviste_nettoyer_contenu_de_test(archiviste_contenu_de_test());
+    @rmdir(archiviste_repertoire_de_test());
 }
 
-function nettoyer_contenu_de_test(array $fichiers = array(), $arborescence = '')
+function archiviste_generer_zip_de_test($zipfile)
 {
+	$files_list = archiviste_generer_contenu_de_test(archiviste_contenu_de_test());
+	$dir_base = archiviste_repertoire_de_test() . '/';
+	foreach ($files_list as $k=>$f) {
+		$files_list[$k] = substr($f, strlen($dir_base));
+	}
+	$zipfile = realpath(dirname($zipfile)) . '/' . basename($zipfile);
+	passthru($cmd = "cd $dir_base && zip -q $zipfile ".implode(" ", $files_list));
+	archiviste_nettoyer_contenu_de_test(archiviste_contenu_de_test());
+}
+
+function archiviste_generer_contenu_de_test(array $fichiers = array(), $arborescence = '')
+{
+	$files_list = [];
     if ($arborescence == '') {
-        $arborescence = repertoire_de_test();
+        $arborescence = archiviste_repertoire_de_test();
+    }
+
+    if (!is_dir($arborescence)) {
+        mkdir($arborescence);
     }
 
     foreach ($fichiers as $fichier => $contenu) {
         if (is_array($contenu)) {
-            nettoyer_contenu_de_test($contenu, $arborescence . ' /' . $fichier);
-            if (is_dir($arborescence . ' /' . $fichier)) {
-                rmdir($arborescence . ' /' . $fichier);
+	        $files_list = array_merge($files_list, archiviste_generer_contenu_de_test($contenu, $arborescence . '/' . $fichier));
+        } elseif (!file_exists($arborescence . '/' . $fichier)) {
+            file_put_contents($arborescence . '/' . $fichier, $contenu);
+	        $files_list[] = $arborescence . '/' . $fichier;
+        }
+    }
+    return $files_list;
+}
+
+function archiviste_nettoyer_contenu_de_test(array $fichiers = array(), $arborescence = '')
+{
+    if ($arborescence == '') {
+        $arborescence = archiviste_repertoire_de_test();
+    }
+
+    foreach ($fichiers as $fichier => $contenu) {
+        if (is_array($contenu)) {
+            archiviste_nettoyer_contenu_de_test($contenu, $arborescence . '/' . $fichier);
+            if (is_dir($arborescence . '/' . $fichier)) {
+                rmdir($arborescence . '/' . $fichier);
             }
         } elseif (file_exists($arborescence . '/' . $fichier)) {
             unlink($arborescence . '/' . $fichier);
         }
     }
+}
+
+function archiviste_finir_test($erreur, $destination) {
+	archiviste_nettoyer_contenu_de_test(archiviste_contenu_de_test(), $destination);
+	archiviste_nettoyer_environnement_test();
+
+	if (!$erreur) {
+		echo 'OK';
+	}
+	else {
+		die($erreur);
+	}
 }

@@ -16,19 +16,19 @@ require $remonte . 'tests/test.inc';
 $ok = true;
 
 require __DIR__ . '/TestCase.inc';
-nettoyer_environnement_test();
+archiviste_nettoyer_environnement_test();
 
 include_spip('inc/archives');
 
 //extensions inconnues
 foreach (array('sans_extension', 'extension_inconnue', 'faux_amis') as $cas) {
-	$archive = new SpipArchives(fichier_de_test($cas));
+	$archive = new SpipArchives(archiviste_fichier_de_test($cas));
 	$ok &= ($archive->erreur() === 2);
 }
 
 //presence fichier
-$fichier = fichier_de_test('zip');
-$repertoire = repertoire_de_test();
+$fichier = archiviste_fichier_de_test('zip');
+$repertoire = archiviste_repertoire_de_test();
 
 //fichier absent
 $archive = new SpipArchives($fichier);
@@ -59,12 +59,9 @@ $ok &= $archive->getLectureSeule();
 chmod($fichier, 0600);
 
 //forcer le mode de compression
-$fichier = fichier_de_test('sans_extension');
+$fichier = archiviste_fichier_de_test('sans_extension');
 touch($fichier);
 $archive = new SpipArchives($fichier, 'zip');
 $ok &= ($archive->erreur() === 0);
 
-nettoyer_environnement_test();
-if ($ok) {
-	echo 'OK';
-}
+archiviste_finir_test(false, $repertoire);

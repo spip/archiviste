@@ -16,7 +16,7 @@ require $remonte . 'tests/test.inc';
 $ok = true;
 
 require __DIR__ . '/TestCase.inc';
-nettoyer_environnement_test();
+archiviste_nettoyer_environnement_test();
 
 include_spip('inc/archives');
 

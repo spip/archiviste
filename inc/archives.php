@@ -51,10 +51,16 @@ class SpipArchives
 	 * @return integer Dernier code d'erreur
 	 */
 	public function erreur() {
+		if (!$this->codeErreur) {
+			return false;
+		}
+
 		$code = in_array($this->codeErreur, array_keys($this->erreurs)) ? $this->codeErreur : 1;
 
 		$this->codeErreur = $code;
-		$this->messageErreur = 'archives:'.$this->erreurs[$code];
+		if ($this->codeErreur!==1 or !$this->messageErreur) {
+			$this->messageErreur = 'archives:'.$this->erreurs[$code];
+		}
 
 		return $code;
 	}
@@ -74,11 +80,81 @@ class SpipArchives
 	 * @return array détail du contenu de l'archive
 	 */
 	public function informer() {
-		return array(
+		if ($this->codeErreur !== 0) {
+			return false;
+		}
+
+		$res = array(
 			'proprietes' => array(),
 			'fichiers' => array()
 		);
+
+		switch ($this->modeCompression) {
+			case 'zip':
+				include_spip('inc/pclzip');
+				$zip = new \PclZip($this->fichierArchive);
+				$res['fichiers'] = $zip->listContent();
+				break;
+		}
+
+		// trouver la racine des fichiers
+		$res['proprietes']['racine'] = $this->trouver_racine($res['fichiers']);
+
+		return $res;
 	}
+
+	/**
+	 * Cherche la plus longue racine commune à tous les fichiers
+	 *
+	 * @param array $list
+	 *     Liste de chemin de fichiers
+	 * @return string
+	 *     Chemin commun entre tous les fichiers
+	 **/
+	protected function trouver_racine($list) {
+		// on cherche la plus longue racine commune a tous les fichiers
+		// pour l'enlever au deballage
+		$max_n = 999999;
+		$paths = array();
+		foreach ($list as $n) {
+			$p = array();
+			foreach (explode('/', $n['filename']) as $n => $x) {
+				if ($n > $max_n) {
+					continue;
+				}
+				$sofar = join('/', $p);
+				if (!isset($paths[$n])) {
+					$paths[$n] = array();
+				}
+				if (!isset($paths[$n][$sofar])) {
+					$paths[$n][$sofar] = 0;
+				}
+				$paths[$n][$sofar]++;
+				$p[] = $x;
+			}
+			$max_n = min($n, $max_n);
+		}
+
+		$total = $paths[0][''];
+		$i = 0;
+		while (isset($paths[$i])
+			and count($paths[$i]) <= 1
+			and array_values($paths[$i]) == array($total)) {
+			$i++;
+		}
+
+		$racine = '';
+		if ($i) {
+			$racine = array_keys($paths[$i - 1]);
+			$racine = array_pop($racine);
+			if ($racine) {
+				$racine .= '/';
+			}
+		}
+
+		return $racine;
+	}
+
 
 	/**
 	 * Extraire tout ou partie des fichiers de l'archive vers une destination.
@@ -96,6 +172,55 @@ class SpipArchives
 		if (!(is_dir($destination) and is_writable($destination))) {
 			$this->codeErreur = 5;
 			return false;
+		}
+
+		if (!$infos = $this->informer()) {
+			return false;
+		}
+
+		switch ($this->modeCompression) {
+			case 'zip':
+				include_spip('inc/pclzip');
+				$zip = new \PclZip($this->fichierArchive);
+
+				$errors = [];
+				if (!$fichiers) {
+					$ok = $zip->extract(
+						PCLZIP_OPT_PATH,
+						$destination,
+						PCLZIP_OPT_SET_CHMOD, _SPIP_CHMOD,
+						PCLZIP_OPT_REPLACE_NEWER,
+						PCLZIP_OPT_REMOVE_PATH, $infos['proprietes']['racine']
+					);
+					if (!$ok or $zip->error_code < 0) {
+						$errors[] = 'deballer() erreur zip ' . $zip->error_code . ' pour paquet: ' . $this->fichierArchive;
+						return false;
+					}
+				}
+				else {
+					foreach ($fichiers as $fichier) {
+						$ok = $zip->extract(
+							PCLZIP_OPT_PATH,
+							$destination,
+							PCLZIP_OPT_SET_CHMOD, _SPIP_CHMOD,
+							PCLZIP_OPT_REPLACE_NEWER,
+							PCLZIP_OPT_REMOVE_PATH, $infos['proprietes']['racine'],
+							PCLZIP_OPT_BY_NAME, $fichier
+						);
+						if (!$ok or $zip->error_code < 0) {
+							$errors[] = "deballer() Fichier $fichier: erreur zip " . $zip->error_code . ' pour paquet: ' . $this->fichierArchive;
+						}
+					}
+				}
+
+				if (count($errors)) {
+					$this->codeErreur = 1;
+					$this->messageErreur = implode("\n", $errors);
+
+					return false;
+				}
+
+				break;
 		}
 
 		$this->codeErreur = 0;
