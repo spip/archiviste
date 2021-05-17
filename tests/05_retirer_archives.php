@@ -21,7 +21,7 @@ archiviste_nettoyer_environnement_test();
 include_spip('inc/archives');
 
 $fichier = archiviste_fichier_de_test('zip');
-archiviste_generer_zip_de_test($fichier);
+archiviste_generer_archive_de_test($fichier, 'zip');
 
 $destination = archiviste_repertoire_de_test();
 
@@ -43,7 +43,7 @@ if (count($infos['fichiers']) !== $nb_files -1) {
 }
 
 @unlink($fichier);
-archiviste_generer_zip_de_test($fichier);
+archiviste_generer_archive_de_test($fichier, 'zip');
 if (!$archive->retirer(array('sousrep/fichier'))) {
 	var_dump($archive->erreur(),$archive->message());
 	archiviste_finir_test("Echec retirer [sousrep/fichier]", $destination);

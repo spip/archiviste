@@ -63,15 +63,22 @@ function archiviste_nettoyer_environnement_test()
     @rmdir(archiviste_repertoire_de_test());
 }
 
-function archiviste_generer_zip_de_test($zipfile)
+function archiviste_generer_archive_de_test($archivefile, $format)
 {
 	$files_list = archiviste_generer_contenu_de_test(archiviste_contenu_de_test());
 	$dir_base = archiviste_repertoire_de_test() . '/';
 	foreach ($files_list as $k=>$f) {
 		$files_list[$k] = substr($f, strlen($dir_base));
 	}
-	$zipfile = realpath(dirname($zipfile)) . '/' . basename($zipfile);
-	passthru($cmd = "cd $dir_base && zip -q $zipfile ".implode(" ", $files_list));
+
+	$archivefile = realpath(dirname($archivefile)) . '/' . basename($archivefile);
+	switch ($format) {
+		case 'zip':
+		default:
+			passthru($cmd = "cd $dir_base && zip -q $archivefile ".implode(" ", $files_list));
+			break;
+	}
+
 	archiviste_nettoyer_contenu_de_test(archiviste_contenu_de_test());
 }
 
