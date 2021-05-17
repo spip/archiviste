@@ -95,8 +95,9 @@ if (!defined("PCL_TAR")) {
 	//   1 on success, or an error code (see table at the beginning).
 	// --------------------------------------------------------------------------------
 	function PclTarCreate($p_tarname, $p_filelist = "", $p_mode = "", $p_add_dir = "", $p_remove_dir = "") {
+		$trace_file_list = (is_array($p_filelist) ? implode(' ', $p_filelist) : $p_filelist);
 		TrFctStart(__FILE__, __LINE__, "PclTarCreate",
-			"tar=$p_tarname, file='$p_filelist', mode=$p_mode, add_dir='$p_add_dir', remove_dir='$p_remove_dir'");
+			"tar=$p_tarname, file='$trace_file_list', mode=$p_mode, add_dir='$p_add_dir', remove_dir='$p_remove_dir'");
 		$v_result = 1;
 
 		// ----- Look for default mode

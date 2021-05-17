@@ -300,12 +300,12 @@ class SpipArchives
 			return false;
 		}
 
+		$racine = $this->trouver_racine($fichiers);
+
 		switch ($this->modeCompression) {
 			case 'zip':
 				include_spip('inc/pclzip');
 				$zip = new \PclZip($this->fichierArchive);
-
-				$racine = $this->trouver_racine($fichiers);
 
 				$v_list = $zip->create(
 					$fichiers,
@@ -321,6 +321,23 @@ class SpipArchives
 				}
 
 				break;
+
+			case 'tar':
+				include_spip('inc/pcltar');
+
+				$ok = PclTarCreate($this->fichierArchive, $fichiers, $this->modeCompression, "", $racine);
+				if ($ok === 0){
+					$this->codeErreur = 1;
+					$this->messageErreur = "emballer() : Echec creation du ".$this->modeCompression. " " . PclErrorString() . ' pour paquet: ' . $this->fichierArchive;
+					return false;
+				}
+
+		}
+
+		// verifier que le fichier existe bien
+		if (!file_exists($this->fichierArchive)) {
+			$this->codeErreur = 3;
+			return false;
 		}
 
 		$this->codeErreur = 0;
