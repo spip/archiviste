@@ -87,19 +87,54 @@ class SpipArchives
 
 		$res = [
 			'proprietes' => [],
-			'fichiers' => []
+			'fichiers' => [
+				/*
+				 * filename
+				 * checksum
+				 * size
+				 * mtime
+				 * status
+				 * raw
+				 */
+			]
 		];
 
 		switch ($this->modeCompression) {
 			case 'zip':
 				include_spip('inc/pclzip');
 				$zip = new \PclZip($this->fichierArchive);
-				$res['fichiers'] = $zip->listContent();
+				$files = $zip->listContent();
+				foreach ($files as $file) {
+					$res['fichiers'][] = [
+						'filename' => $file['stored_filename'],
+						'checksum' => $file['crc'],
+						'size' => $file['size'],
+						'mtime' => $file['mtime'],
+						'raw' => $file
+					];
+				}
 				break;
+			case 'tar':
+				include_spip('inc/pcltar');
+				$files = PclTarList($this->fichierArchive);
+				foreach ($files as $file) {
+					$res['fichiers'][] = [
+						'filename' => $file['filename'],
+						'checksum' => $file['checksum'],
+						'size' => $file['size'],
+						'mtime' => $file['mtime'],
+						'raw' => $file
+					];
+				}
 		}
 
 		// trouver la racine des fichiers
-		$res['proprietes']['racine'] = $this->trouver_racine(array_column($res['fichiers'], 'stored_filename'));
+		if (!empty($res['fichiers'])) {
+			$res['proprietes']['racine'] = $this->trouver_racine(array_column($res['fichiers'], 'filename'));
+		}
+		else {
+			$res['proprietes']['racine'] = '';
+		}
 
 		return $res;
 	}
