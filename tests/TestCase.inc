@@ -26,6 +26,8 @@ function archiviste_definir_fichiers_de_test()
         'sans_extension' => 'archives_test',
         'extension_inconnue' => 'archives_test.' . archiviste_inconnu(),
         'zip' => 'archives_test' . archiviste_inconnu() . '.zip',
+        'tar' => 'archives_test' . archiviste_inconnu() . '.tar',
+        'tgz' => 'archives_test' . archiviste_inconnu() . '.tgz',
         'faux_amis' => 'fichier_test_zip',
     );
 
