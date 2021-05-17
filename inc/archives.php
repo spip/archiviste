@@ -24,7 +24,7 @@ class SpipArchives
 	private $messageErreur;
 
 	/** @var array Mode de compression connus */
-	private $compressionsConnues = array('zip');
+	private $compressionsConnues = ['zip'];
 
 	/** @var string Mode de compression si l'extension du fichier n'est pas explicite */
 	private $modeCompression;
@@ -36,7 +36,7 @@ class SpipArchives
 	private $lectureSeule = true;
 
 	/** @var array Liste des erreurs possibles */
-	private $erreurs = array(
+	private $erreurs = [
 		0 => 'OK',
 		1 => 'erreur_inconnue',
 		2 => 'extension_inconnue',
@@ -44,7 +44,7 @@ class SpipArchives
 		4 => 'fichier_lecture_seule',
 		5 => 'destination_inaccessible',
 		6 => 'fichier_deja_existant',
-	);
+	];
 
 	/**
 	 * Renvoyer le dernier code d'erreur.
@@ -85,10 +85,10 @@ class SpipArchives
 			return false;
 		}
 
-		$res = array(
-			'proprietes' => array(),
-			'fichiers' => array()
-		);
+		$res = [
+			'proprietes' => [],
+			'fichiers' => []
+		];
 
 		switch ($this->modeCompression) {
 			case 'zip':
@@ -116,16 +116,16 @@ class SpipArchives
 		// on cherche la plus longue racine commune a tous les fichiers
 		// pour l'enlever au deballage
 		$max_n = 999999;
-		$paths = array();
+		$paths = [];
 		foreach ($path_list as $path) {
-			$p = array();
+			$p = [];
 			foreach (explode('/', $path) as $n => $x) {
 				if ($n > $max_n) {
 					continue;
 				}
 				$sofar = join('/', $p);
 				if (!isset($paths[$n])) {
-					$paths[$n] = array();
+					$paths[$n] = [];
 				}
 				if (!isset($paths[$n][$sofar])) {
 					$paths[$n][$sofar] = 0;
@@ -140,7 +140,7 @@ class SpipArchives
 		$i = 0;
 		while (isset($paths[$i])
 			and count($paths[$i]) <= 1
-			and array_values($paths[$i]) == array($total)) {
+			and array_values($paths[$i]) == [$total]) {
 			$i++;
 		}
 
@@ -165,7 +165,7 @@ class SpipArchives
 	 *
 	 * @return boolean			  Succès de l'opération
 	 */
-	public function deballer($destination = '', array $fichiers = array()) {
+	public function deballer($destination = '', array $fichiers = []) {
 		if ($this->codeErreur !== 0) {
 			return false;
 		}
@@ -235,7 +235,7 @@ class SpipArchives
 	 *
 	 * @return boolean		   Succès de l'opération
 	 */
-	public function emballer(array $fichiers = array()) {
+	public function emballer(array $fichiers = []) {
 		if ($this->lectureSeule) {
 			$this->codeErreur = 4;
 			return false;
@@ -281,7 +281,7 @@ class SpipArchives
 	 *
 	 * @return boolean		   Succès de l'opération
 	 */
-	public function retirer(array $fichiers = array()) {
+	public function retirer(array $fichiers = []) {
 		if ($this->lectureSeule) {
 			$this->codeErreur = 4;
 			return false;
