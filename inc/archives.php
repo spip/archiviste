@@ -17,14 +17,14 @@ namespace Spip\Archives;
  */
 class SpipArchives
 {
+	/** @const array Mode de compression connus */
+	public const compressionsConnues = ['zip', 'tar'];
+
 	/** @var integer Dernier code d'erreur */
 	private $codeErreur;
 
 	/** @var string Dernier message d'erreur */
 	private $messageErreur;
-
-	/** @var array Mode de compression connus */
-	private $compressionsConnues = ['zip'];
 
 	/** @var string Mode de compression si l'extension du fichier n'est pas explicite */
 	private $modeCompression;
@@ -323,7 +323,7 @@ class SpipArchives
 		}
 
 		$modeCompression = strtolower($modeCompression);
-		if (!in_array($modeCompression, $this->compressionsConnues)) {
+		if (!in_array($modeCompression, self::compressionsConnues)) {
 			$this->codeErreur = 2;
 		} elseif (!file_exists($fichierArchive)) {
 			$this->codeErreur = 3;
