@@ -372,6 +372,17 @@ class SpipArchives
 					return false;
 				}
 				break;
+
+			case 'tar':
+				include_spip('inc/pcltar');
+				$ok = PclTarDelete($this->fichierArchive, $fichiers, $this->modeCompression);
+				if ($ok === 0){
+					$this->codeErreur = 1;
+					$this->messageErreur = "retirer() : Echec retirer fichiers ".json_encode($fichiers). " " . PclErrorString() . ' pour paquet: ' . $this->fichierArchive;
+					return false;
+				}
+
+				break;
 		}
 
 

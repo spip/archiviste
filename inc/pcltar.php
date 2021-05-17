@@ -574,7 +574,8 @@ if (!defined("PCL_TAR")) {
 	//   List of the files which are kept in the archive (same format as PclTarList())
 	// --------------------------------------------------------------------------------
 	function PclTarDelete($p_tarname, $p_filelist, $p_mode = "") {
-		TrFctStart(__FILE__, __LINE__, "PclTarDelete", "tar='$p_tarname', list='$p_filelist', mode='$p_mode'");
+		$trace_file_list = (is_array($p_filelist) ? implode(' ', $p_filelist) : $p_filelist);
+		TrFctStart(__FILE__, __LINE__, "PclTarDelete", "tar='$p_tarname', list='$trace_file_list', mode='$p_mode'");
 		$v_result = 1;
 
 		// ----- Extract the tar format from the extension
