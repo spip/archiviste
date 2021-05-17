@@ -18,7 +18,7 @@ namespace Spip\Archives;
 class SpipArchives
 {
 	/** @const array Mode de compression connus */
-	public const compressionsConnues = ['zip', 'tar'];
+	public const compressionsConnues = ['zip', 'tar', 'tgz'];
 
 	/** @var integer Dernier code d'erreur */
 	private $codeErreur;
@@ -115,8 +115,9 @@ class SpipArchives
 				}
 				break;
 			case 'tar':
+			case 'tgz':
 				include_spip('inc/pcltar');
-				$files = PclTarList($this->fichierArchive);
+				$files = PclTarList($this->fichierArchive, $this->modeCompression);
 				foreach ($files as $file) {
 					$res['fichiers'][] = [
 						'filename' => $file['filename'],
@@ -253,6 +254,7 @@ class SpipArchives
 				break;
 
 			case 'tar':
+			case 'tgz':
 				include_spip('inc/pcltar');
 				if (!$fichiers){
 					$ok = PclTarExtract($this->fichierArchive, $destination, $infos['proprietes']['racine'], $this->modeCompression);
@@ -323,6 +325,7 @@ class SpipArchives
 				break;
 
 			case 'tar':
+			case 'tgz':
 				include_spip('inc/pcltar');
 
 				$ok = PclTarCreate($this->fichierArchive, $fichiers, $this->modeCompression, "", $racine);
@@ -374,6 +377,7 @@ class SpipArchives
 				break;
 
 			case 'tar':
+			case 'tgz':
 				include_spip('inc/pcltar');
 				$ok = PclTarDelete($this->fichierArchive, $fichiers, $this->modeCompression);
 				if ($ok === 0){
