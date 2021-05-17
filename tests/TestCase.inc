@@ -73,6 +73,9 @@ function archiviste_generer_archive_de_test($archivefile, $format)
 
 	$archivefile = realpath(dirname($archivefile)) . '/' . basename($archivefile);
 	switch ($format) {
+		case 'tar':
+			passthru($cmd = "cd $dir_base && tar -cf $archivefile ".implode(" ", $files_list));
+			break;
 		case 'zip':
 		default:
 			passthru($cmd = "cd $dir_base && zip -q $archivefile ".implode(" ", $files_list));
