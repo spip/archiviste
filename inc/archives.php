@@ -214,12 +214,12 @@ class SpipArchives
 			return false;
 		}
 
+		$errors = [];
 		switch ($this->modeCompression) {
 			case 'zip':
 				include_spip('inc/pclzip');
 				$zip = new \PclZip($this->fichierArchive);
 
-				$errors = [];
 				if (!$fichiers) {
 					$ok = $zip->extract(
 						PCLZIP_OPT_PATH,
@@ -249,14 +249,32 @@ class SpipArchives
 					}
 				}
 
-				if (count($errors)) {
-					$this->codeErreur = 1;
-					$this->messageErreur = implode("\n", $errors);
 
-					return false;
+				break;
+
+			case 'tar':
+				include_spip('inc/pcltar');
+				if (!$fichiers){
+					$ok = PclTarExtract($this->fichierArchive, $destination, $infos['proprietes']['racine'], $this->modeCompression);
+					if ($ok === 0){
+						$errors[] = 'deballer() erreur tar ' . PclErrorString() . ' pour paquet: ' . $this->fichierArchive;
+					}
+				}
+				else {
+					$ok = PclTarExtractList($this->fichierArchive, $fichiers, $destination, $infos['proprietes']['racine'], $this->modeCompression);
+					if ($ok === 0){
+						$errors[] = 'deballer() erreur tar ' . PclErrorString() . ' pour paquet: ' . $this->fichierArchive;
+					}
 				}
 
 				break;
+		}
+
+		if (count($errors)) {
+			$this->codeErreur = 1;
+			$this->messageErreur = implode("\n", $errors);
+
+			return false;
 		}
 
 		$this->codeErreur = 0;
