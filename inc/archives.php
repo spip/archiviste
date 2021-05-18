@@ -287,10 +287,11 @@ class SpipArchives
 	 * Créer ou modifier des fichiers dans le fichier d'archive.
 	 *
 	 * @param  array   $fichiers Liste des fichiers à ajouter ou modifier
+	 * @param  string  $racine Repertoire racine des fichiers a retirer du chemin lorsqu'on zip
 	 *
 	 * @return boolean		   Succès de l'opération
 	 */
-	public function emballer(array $fichiers = []) {
+	public function emballer(array $fichiers = [], $racine = null) {
 		if ($this->lectureSeule) {
 			$this->codeErreur = 4;
 			return false;
@@ -302,7 +303,11 @@ class SpipArchives
 			return false;
 		}
 
-		$racine = $this->trouver_racine($fichiers);
+		// si pas de racine fournie, on la determine automatiquement
+		// en trouvant le chemin le plus long commun a tous les fichiers
+		if (is_null($racine)) {
+			$racine = $this->trouver_racine($fichiers);
+		}
 
 		switch ($this->modeCompression) {
 			case 'zip':
