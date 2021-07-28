@@ -128,48 +128,6 @@ function archiviste_nettoyer_contenu_de_test(array $fichiers = array(), $arbores
     }
 }
 
-function archiviste_finir_test($erreur, $destination) {
-	archiviste_nettoyer_contenu_de_test(archiviste_contenu_de_test(), $destination);
-	archiviste_nettoyer_environnement_test();
-
-	if (!$erreur) {
-		echo 'OK';
-	}
-	else {
-		die($erreur);
-	}
-}
-
-function archiviste_teste_deballer($fichier, $format) {
-	$destination = archiviste_repertoire_de_test();
-
-
-	$archive = new Spip\Archives\SpipArchives($fichier);
-	if (!$archive->deballer($destination, array('test.txt'))) {
-		archiviste_finir_test("[$format] Echec deballer [test.txt]", $destination);
-	}
-
-	if (!file_exists($f = $destination . '/test.txt')) {
-		archiviste_finir_test("[$format] Fichier $f absent", $destination);
-	}
-	if (file_exists($f = $destination . '/sousrep/fichier')) {
-		archiviste_finir_test("[$format] Fichier $f present mais pas demande", $destination);
-	}
-
-	archiviste_nettoyer_contenu_de_test(archiviste_contenu_de_test(), $destination);
-	if (!$archive->deballer($destination)){
-		archiviste_finir_test("[$format] Echec deballer", $destination);
-	}
-	if (!file_exists($f = $destination . '/test.txt')) {
-		archiviste_finir_test("[$format] Fichier $f absent", $destination);
-	}
-	if (!file_exists($f = $destination . '/sousrep/fichier')) {
-		archiviste_finir_test("[$format] Fichier $f absent", $destination);
-	}
-
-	archiviste_nettoyer_contenu_de_test(archiviste_contenu_de_test(), $destination);
-
-}
 
 function archiviste_trouver_fichier($fileName, $files) {
 	foreach ($files as $file) {
