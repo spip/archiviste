@@ -1,0 +1,7 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Function include_spip not found\\.$#"
+			count: 8
+			path: inc/archives.php
+

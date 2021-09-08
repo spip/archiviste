@@ -59,8 +59,8 @@ class SpipArchives
 		$code = in_array($this->codeErreur, array_keys($this->erreurs)) ? $this->codeErreur : 1;
 
 		$this->codeErreur = $code;
-		if ($this->codeErreur!==1 or !$this->messageErreur) {
-			$this->messageErreur = 'archives:'.$this->erreurs[$code];
+		if ($this->codeErreur !== 1 or !$this->messageErreur) {
+			$this->messageErreur = 'archives:' . $this->erreurs[$code];
 		}
 
 		return $code;
@@ -174,9 +174,11 @@ class SpipArchives
 
 		$total = $paths[0][''];
 		$i = 0;
-		while (isset($paths[$i])
+		while (
+			isset($paths[$i])
 			and count($paths[$i]) <= 1
-			and array_values($paths[$i]) == [$total]) {
+			and array_values($paths[$i]) == [$total]
+		) {
 			$i++;
 		}
 
@@ -225,9 +227,11 @@ class SpipArchives
 					$ok = $zip->extract(
 						PCLZIP_OPT_PATH,
 						$destination,
-						PCLZIP_OPT_SET_CHMOD, _SPIP_CHMOD,
+						PCLZIP_OPT_SET_CHMOD,
+						_SPIP_CHMOD,
 						PCLZIP_OPT_REPLACE_NEWER,
-						PCLZIP_OPT_REMOVE_PATH, $infos['proprietes']['racine']
+						PCLZIP_OPT_REMOVE_PATH,
+						$infos['proprietes']['racine']
 					);
 					if (!$ok or $zip->error_code < 0) {
 						$errors[] = 'deballer() erreur zip ' . $zip->error_code . ' pour paquet: ' . $this->fichierArchive;
@@ -239,10 +243,13 @@ class SpipArchives
 						$ok = $zip->extract(
 							PCLZIP_OPT_PATH,
 							$destination,
-							PCLZIP_OPT_SET_CHMOD, _SPIP_CHMOD,
+							PCLZIP_OPT_SET_CHMOD,
+							_SPIP_CHMOD,
 							PCLZIP_OPT_REPLACE_NEWER,
-							PCLZIP_OPT_REMOVE_PATH, $infos['proprietes']['racine'],
-							PCLZIP_OPT_BY_NAME, $fichier
+							PCLZIP_OPT_REMOVE_PATH,
+							$infos['proprietes']['racine'],
+							PCLZIP_OPT_BY_NAME,
+							$fichier
 						);
 						if (!$ok or $zip->error_code < 0) {
 							$errors[] = "deballer() Fichier $fichier: erreur zip " . $zip->error_code . ' pour paquet: ' . $this->fichierArchive;
@@ -256,15 +263,15 @@ class SpipArchives
 			case 'tar':
 			case 'tgz':
 				include_spip('inc/pcltar');
-				if (!$fichiers){
+				if (!$fichiers) {
 					$ok = PclTarExtract($this->fichierArchive, $destination, $infos['proprietes']['racine'], $this->modeCompression);
-					if ($ok === 0){
+					if ($ok === 0) {
 						$errors[] = 'deballer() erreur tar ' . PclErrorString() . ' pour paquet: ' . $this->fichierArchive;
 					}
 				}
 				else {
 					$ok = PclTarExtractList($this->fichierArchive, $fichiers, $destination, $infos['proprietes']['racine'], $this->modeCompression);
-					if ($ok === 0){
+					if ($ok === 0) {
 						$errors[] = 'deballer() erreur tar ' . PclErrorString() . ' pour paquet: ' . $this->fichierArchive;
 					}
 				}
@@ -323,7 +330,7 @@ class SpipArchives
 				);
 				if (!$v_list or $zip->error_code < 0) {
 					$this->codeErreur = 1;
-					$this->messageErreur = "emballer() : Echec creation du zip " . $zip->error_code . ' pour paquet: ' . $this->fichierArchive;
+					$this->messageErreur = 'emballer() : Echec creation du zip ' . $zip->error_code . ' pour paquet: ' . $this->fichierArchive;
 					return false;
 				}
 
@@ -333,13 +340,12 @@ class SpipArchives
 			case 'tgz':
 				include_spip('inc/pcltar');
 
-				$ok = PclTarCreate($this->fichierArchive, $fichiers, $this->modeCompression, "", $racine);
-				if ($ok === 0){
+				$ok = PclTarCreate($this->fichierArchive, $fichiers, $this->modeCompression, '', $racine);
+				if ($ok === 0) {
 					$this->codeErreur = 1;
-					$this->messageErreur = "emballer() : Echec creation du ".$this->modeCompression. " " . PclErrorString() . ' pour paquet: ' . $this->fichierArchive;
+					$this->messageErreur = 'emballer() : Echec creation du ' . $this->modeCompression . ' ' . PclErrorString() . ' pour paquet: ' . $this->fichierArchive;
 					return false;
 				}
-
 		}
 
 		// verifier que le fichier existe bien
@@ -376,7 +382,7 @@ class SpipArchives
 				$ok = $zip->delete(PCLZIP_OPT_BY_NAME, $fichiers);
 				if (!$ok or $zip->error_code < 0) {
 					$this->codeErreur = 1;
-					$this->messageErreur = "retirer() : Echec retirer fichiers ".json_encode($fichiers). " " . $zip->error_code . ' pour paquet: ' . $this->fichierArchive;
+					$this->messageErreur = 'retirer() : Echec retirer fichiers ' . json_encode($fichiers) . ' ' . $zip->error_code . ' pour paquet: ' . $this->fichierArchive;
 					return false;
 				}
 				break;
@@ -385,9 +391,9 @@ class SpipArchives
 			case 'tgz':
 				include_spip('inc/pcltar');
 				$ok = PclTarDelete($this->fichierArchive, $fichiers, $this->modeCompression);
-				if ($ok === 0){
+				if ($ok === 0) {
 					$this->codeErreur = 1;
-					$this->messageErreur = "retirer() : Echec retirer fichiers ".json_encode($fichiers). " " . PclErrorString() . ' pour paquet: ' . $this->fichierArchive;
+					$this->messageErreur = 'retirer() : Echec retirer fichiers ' . json_encode($fichiers) . ' ' . PclErrorString() . ' pour paquet: ' . $this->fichierArchive;
 					return false;
 				}
 
