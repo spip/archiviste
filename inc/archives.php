@@ -21,22 +21,22 @@ class SpipArchives
 	public const compressionsConnues = ['zip', 'tar', 'tgz'];
 
 	/** @var integer Dernier code d'erreur */
-	private $codeErreur;
+	private int $codeErreur;
 
 	/** @var string Dernier message d'erreur */
-	private $messageErreur;
+	private string $messageErreur;
 
 	/** @var string Mode de compression si l'extension du fichier n'est pas explicite */
-	private $modeCompression;
+	private string $modeCompression;
 
 	/** @var string Chemin vers le fichier d'archives */
-	private $fichierArchive;
+	private string $fichierArchive;
 
 	/** @var boolean true si l'archive est en lecture seule */
-	private $lectureSeule = true;
+	private bool $lectureSeule = true;
 
 	/** @var array Liste des erreurs possibles */
-	private $erreurs = [
+	private array $erreurs = [
 		0 => 'OK',
 		1 => 'erreur_inconnue',
 		2 => 'extension_inconnue',
@@ -382,7 +382,7 @@ class SpipArchives
 				$ok = $zip->delete(PCLZIP_OPT_BY_NAME, $fichiers);
 				if (!$ok or $zip->error_code < 0) {
 					$this->codeErreur = 1;
-					$this->messageErreur = 'retirer() : Echec retirer fichiers ' . json_encode($fichiers) . ' ' . $zip->error_code . ' pour paquet: ' . $this->fichierArchive;
+					$this->messageErreur = 'retirer() : Echec retirer fichiers ' . json_encode($fichiers, JSON_THROW_ON_ERROR) . ' ' . $zip->error_code . ' pour paquet: ' . $this->fichierArchive;
 					return false;
 				}
 				break;
@@ -393,7 +393,7 @@ class SpipArchives
 				$ok = PclTarDelete($this->fichierArchive, $fichiers, $this->modeCompression);
 				if ($ok === 0) {
 					$this->codeErreur = 1;
-					$this->messageErreur = 'retirer() : Echec retirer fichiers ' . json_encode($fichiers) . ' ' . PclErrorString() . ' pour paquet: ' . $this->fichierArchive;
+					$this->messageErreur = 'retirer() : Echec retirer fichiers ' . json_encode($fichiers, JSON_THROW_ON_ERROR) . ' ' . PclErrorString() . ' pour paquet: ' . $this->fichierArchive;
 					return false;
 				}
 

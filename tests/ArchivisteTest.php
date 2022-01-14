@@ -32,7 +32,7 @@ class ArchivisteTest extends TestCase {
 	}
 
 	protected function afficheArchiveErreur($archive, $message){
-		return ($message ? $message : "Echec erreur innatendue")
+		return ($message ?: "Echec erreur innatendue")
 			. "\nErreur : " . $archive->erreur()
 			. " | Message: " . $archive->message();
 	}
@@ -191,13 +191,13 @@ class ArchivisteTest extends TestCase {
 			$files_list = archiviste_generer_contenu_de_test(archiviste_contenu_de_test());
 
 			$archive = new SpipArchives($fichier);
-			$this->assertTrue($archive->emballer($files_list), $this->afficheArchiveErreur($archive, "[$format] Echec emballer " . json_encode($files_list)));
+			$this->assertTrue($archive->emballer($files_list), $this->afficheArchiveErreur($archive, "[$format] Echec emballer " . json_encode($files_list, JSON_THROW_ON_ERROR)));
 
 			archiviste_nettoyer_contenu_de_test(archiviste_contenu_de_test(), $this->repertoire);
 
 			$infos = $archive->informer();
 			$this->assertNotEmpty($infos, $this->afficheArchiveErreur($archive, "[$format] Echec emballer : nombre de fichiers incorrects"));
-			$this->assertCount(count($files_list), $infos['fichiers'], $this->afficheArchiveErreur($archive, "[$format] Echec emballer : nombre de fichiers incorrects"));
+			$this->assertCount(is_countable($files_list) ? count($files_list) : 0, $infos['fichiers'], $this->afficheArchiveErreur($archive, "[$format] Echec emballer : nombre de fichiers incorrects"));
 
 			$this->verifierDeballerArchive($fichier, $format);
 		}
@@ -223,19 +223,19 @@ class ArchivisteTest extends TestCase {
 			$archive = new SpipArchives($fichier);
 
 			$infos = $archive->informer();
-			$nb_files = count($infos['fichiers']);
+			$nb_files = is_countable($infos['fichiers']) ? count($infos['fichiers']) : 0;
 
 			$this->assertTrue($archive->retirer(array('test.txt')), $this->afficheArchiveErreur($archive, "[$format] Echec retirer [test.txt]"));
 
 			$infos = $archive->informer();
-			$this->assertCount($nb_files-1, $infos['fichiers'],  "[$format] retirer [test.txt] : nombre de fichiers innatendus apres\n" . json_encode($infos));
+			$this->assertCount($nb_files-1, $infos['fichiers'],  "[$format] retirer [test.txt] : nombre de fichiers innatendus apres\n" . json_encode($infos, JSON_THROW_ON_ERROR));
 
 			@unlink($fichier);
 			archiviste_generer_archive_de_test($fichier, $format);
 			$this->assertTrue($archive->retirer(array('sousrep/fichier')), $this->afficheArchiveErreur($archive, "[$format] Echec retirer [sousrep/fichier]"));
 
 			$infos = $archive->informer();
-			$this->assertCount($nb_files-1, $infos['fichiers'],  "[$format] retirer [sousrep/fichier] : nombre de fichiers innatendus apres\n" . json_encode($infos));
+			$this->assertCount($nb_files-1, $infos['fichiers'],  "[$format] retirer [sousrep/fichier] : nombre de fichiers innatendus apres\n" . json_encode($infos, JSON_THROW_ON_ERROR));
 
 
 			$this->assertTrue($archive->retirer(array('dir/fichierinexistant')), $this->afficheArchiveErreur($archive, "[$format] Echec retirer [dir/fichierinexistant] n'aurait pas du produire une erreur"));
