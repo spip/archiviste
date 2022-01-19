@@ -9,7 +9,7 @@ parameters:
             - vendor
             - lang
             - tests
-        analyse:w
+        analyse:
             - inc/pcltar.php
             - inc/pclzip.php
             - lib
