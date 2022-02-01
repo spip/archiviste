@@ -129,9 +129,7 @@ class SpipArchiverTest extends TestCase
 			'empty-tar' => [
 				0,
 				[
-                    'proprietes' => [
-						'racine' => '',
-					],
+                    'proprietes' => [],
                     'fichiers' => [],
                 ],
 				__DIR__ . '/../var/tmp/tar/empty.tar',
