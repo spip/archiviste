@@ -26,6 +26,10 @@ class TarArchive implements ArchiveInterface
 			2
 		);
 
+		if ('' === $this->tar->getFilename()) {
+			return 0;
+		}
+
 		return 1;
 	}
 
@@ -38,7 +42,6 @@ class TarArchive implements ArchiveInterface
 		if ('' === $this->tar->getPathname()) {
 			return $files;
 		}
-
 		$root_dir = dirname($this->tar->getPathname());
 		$source = new NoDotFilterIterator(
 			new \RecursiveIteratorIterator(
