@@ -118,8 +118,9 @@ class SpipArchiver extends AbstractArchiver implements ArchiverInterface
 					if ($archive) {
 						if (1 === $archive->open($this->fichier_archive, 'retrait')) {
 							// Vérifier qu'on ne cherche pas à vider l'archive
-							$reste = count($this->informer());
-							if ($reste === count($fichiers)) {
+							$reste = $this->informer();
+							$fichiers_restants = array_column($reste['fichiers'], 'filename');
+							if (0 === count(array_diff($fichiers_restants, $fichiers))) {
 								$this->setErreur(8);
 
 								return false;
