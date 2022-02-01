@@ -5,11 +5,6 @@ namespace Spip\Archiver\Tests;
 use PHPUnit\Framework\TestCase;
 use Spip\Archiver\SpipArchiver;
 
-// si on lance les tests depuis tests/
-if (function_exists('include_spip')) {
-	include_spip('inc/archives');
-}
-
 /**
  * @covers \Spip\Archiver\AbstractArchiver
  * @covers \Spip\Archiver\SpipArchiver
@@ -28,24 +23,25 @@ class SpipArchiverTest extends TestCase
         @file_put_contents(__DIR__ . '/../var/tmp/directory/test.txt', 'contenu de test');
 
 
-		$test_retirer_zip = new \ZipArchive();
-		$test_retirer_zip->open(__DIR__ . '/../var/tmp/retirer.zip', \ZipArchive::CREATE);
-		$test_retirer_zip->addFromString('test.txt', 'contenu de test');
-		$test_retirer_zip->close();
-		@mkdir(__DIR__ . '/../var/tmp/tar/directory');
+        $test_retirer_zip = new \ZipArchive();
+        $test_retirer_zip->open(__DIR__ . '/../var/tmp/retirer.zip', \ZipArchive::CREATE);
+        $test_retirer_zip->addFromString('test.txt', 'contenu de test');
+        $test_retirer_zip->addFromString('sub_directory/test2.txt', 'contenu de test2');
+        $test_retirer_zip->close();
+        @mkdir(__DIR__ . '/../var/tmp/tar/directory');
         @file_put_contents(__DIR__ . '/../var/tmp/tar/directory/test.txt', 'contenu de test');
-		@mkdir(__DIR__ . '/../var/tmp/tar/directory/sub_directory');
+        @mkdir(__DIR__ . '/../var/tmp/tar/directory/sub_directory');
         @file_put_contents(__DIR__ . '/../var/tmp/tar/directory/sub_directory/test2.txt', 'contenu de test2');
-		$test_retirer_tar = new \Spip\Archiver\TarArchive();
-		$test_retirer_tar->open(__DIR__ . '/../var/tmp/tar/retirer.tar', 'creation');
-		$test_retirer_tar->compress(__DIR__ . '/../var/tmp/tar/directory', [
-			__DIR__ . '/../var/tmp/tar/directory/test.txt',
-			__DIR__ . '/../var/tmp/tar/directory/sub_directory/test2.txt',
-		]);
-		@unlink(__DIR__ . '/../var/tmp/tar/directory/test.txt');
+        $test_retirer_tar = new \Spip\Archiver\TarArchive();
+        $test_retirer_tar->open(__DIR__ . '/../var/tmp/tar/retirer.tar', 'creation');
+        $test_retirer_tar->compress(__DIR__ . '/../var/tmp/tar/directory', [
+            __DIR__ . '/../var/tmp/tar/directory/test.txt',
+            __DIR__ . '/../var/tmp/tar/directory/sub_directory/test2.txt',
+        ]);
+        @unlink(__DIR__ . '/../var/tmp/tar/directory/test.txt');
         @unlink(__DIR__ . '/../var/tmp/tar/directory/sub_directory/test2.txt');
-		@rmdir(__DIR__ . '/../var/tmp/tar/directory/sub_directory');
-		@rmdir(__DIR__ . '/../var/tmp/tar/directory');
+        @rmdir(__DIR__ . '/../var/tmp/tar/directory/sub_directory');
+        @rmdir(__DIR__ . '/../var/tmp/tar/directory');
     }
 
     public static function tearDownAfterClass(): void
@@ -126,15 +122,6 @@ class SpipArchiverTest extends TestCase
                 __DIR__ . '/../var/tmp/tar/test.tar',
                 '',
             ],
-			'empty-tar' => [
-				0,
-				[
-                    'proprietes' => [],
-                    'fichiers' => [],
-                ],
-				__DIR__ . '/../var/tmp/tar/empty.tar',
-				'tar',
-			],
             'tgz' => [
                 0,
                 [
@@ -181,7 +168,7 @@ class SpipArchiverTest extends TestCase
                 [],
                 __DIR__ . '/../var/tmp/test.txt',
             ],
-			'destination-not-exists' => [
+            'destination-not-exists' => [
                 false,
                 5,
                 __DIR__ . '/../var/tmp/test.zip',
@@ -261,11 +248,11 @@ class SpipArchiverTest extends TestCase
                 null,
             ],
             'tar' => [
-				true,
-				0,
-				__DIR__ . '/../var/tmp/tar/emballer.tar',
-				'',
-				[__DIR__ . '/../var/tmp/directory/test.txt'],
+                true,
+                0,
+                __DIR__ . '/../var/tmp/tar/emballer.tar',
+                '',
+                [__DIR__ . '/../var/tmp/directory/test.txt'],
                 __DIR__ . '/../var/tmp/directory',
             ],
         ];
@@ -288,7 +275,7 @@ class SpipArchiverTest extends TestCase
         $this->assertTrue(file_exists($file), 'compressed file exists');
     }
 
-	public function dataRetirer()
+    public function dataRetirer()
     {
         return [
             'not-exists' => [
@@ -304,6 +291,13 @@ class SpipArchiverTest extends TestCase
                 __DIR__ . '/../var/tmp/retirer.zip',
                 '',
                 ['test.txt'],
+            ],
+            'vider' => [
+                false,
+                8,
+                __DIR__ . '/../var/tmp/retirer.zip',
+                '',
+                ['test.txt', 'sub_directory/test2.txt'],
             ],
             'tar' => [
                 true,

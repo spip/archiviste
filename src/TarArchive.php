@@ -26,10 +26,6 @@ class TarArchive implements ArchiveInterface
 			2
 		);
 
-		if ('' === $this->tar->getFilename()) {
-			return 0;
-		}
-
 		return 1;
 	}
 

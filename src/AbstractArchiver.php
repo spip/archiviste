@@ -36,6 +36,7 @@ abstract class AbstractArchiver implements ArchiverInterface
 		5 => 'destination_inaccessible',
 		6 => 'fichier_deja_existant',
 		7 => 'fichier_inaccessible_en_lecture',
+		8 => 'tentative_de_vidage_du_fichier',
 	];
 
 	/**
