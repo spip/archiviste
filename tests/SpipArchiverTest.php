@@ -5,6 +5,11 @@ namespace Spip\Archiver\Tests;
 use PHPUnit\Framework\TestCase;
 use Spip\Archiver\SpipArchiver;
 
+// si on lance les tests depuis tests/
+if (function_exists('include_spip')) {
+	include_spip('inc/archives');
+}
+
 /**
  * @covers \Spip\Archiver\AbstractArchiver
  * @covers \Spip\Archiver\SpipArchiver
