@@ -50,4 +50,14 @@ interface ArchiveInterface
 	 * Fermer la resource du fichier d'archive.
 	 */
 	public function close(): bool;
+
+	/**
+	 * Associer un commentaire à l'archive
+	 */
+	public function setMeta(string $meta): bool;
+
+	/**
+	 * Lire le commentaire associé à l'archive si il existe
+	 */
+	public function getMeta();
 }

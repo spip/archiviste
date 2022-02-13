@@ -100,4 +100,17 @@ class TarArchive implements ArchiveInterface
 	public function close(): bool {
 		return true;
 	}
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setMeta(string $meta): bool {
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getMeta() {
+		return '';
+	}
 }

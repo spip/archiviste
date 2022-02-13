@@ -98,7 +98,7 @@ abstract class AbstractArchiver implements ArchiverInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	abstract public function emballer(array $fichiers = [], ?string $racine = null): bool;
+	abstract public function emballer(array $fichiers = [], ?string $racine = null, ?string $meta = null): bool;
 
 	/**
 	 * {@inheritDoc}
