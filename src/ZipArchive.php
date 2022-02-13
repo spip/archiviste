@@ -89,4 +89,18 @@ class ZipArchive implements ArchiveInterface
 	public function close(): bool {
 		return $this->zip->close();
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setMeta(string $meta): bool {
+		return $this->zip->setArchiveComment($meta);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getMeta() {
+		return $this->zip->getArchiveComment();
+	}
 }

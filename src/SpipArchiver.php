@@ -2,6 +2,9 @@
 
 namespace Spip\Archiver;
 
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+
 /**
  * {@inheritDoc}
  * Implémentation des méthodes principales.
@@ -24,6 +27,7 @@ class SpipArchiver extends AbstractArchiver implements ArchiverInterface
 				 * raw
 				 */
 			],
+			'meta' => ''
 		];
 
 		$archive = $this->archiveEnLecture();
@@ -36,6 +40,7 @@ class SpipArchiver extends AbstractArchiver implements ArchiverInterface
 
 			$liste['fichiers'] = $archive->list();
 			$liste['proprietes']['racine'] = $this->trouverRacine(array_column($liste['fichiers'], 'filename'));
+			$liste['meta'] = $archive->getMeta();
 			$archive->close();
 		}
 
@@ -70,8 +75,8 @@ class SpipArchiver extends AbstractArchiver implements ArchiverInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	public function emballer(array $fichiers = [], ?string $racine = null): bool {
-		$source = is_null($racine) ? $this->trouverRacine($fichiers) : $racine;
+	public function emballer(array $chemins = [], ?string $racine = null, ?string $meta = null): bool {
+		$source = is_null($racine) ? $this->trouverRacine($chemins) : $racine;
 
 		if (!(is_dir($source) && is_readable($source))) {
 			$this->setErreur(7);
@@ -88,7 +93,34 @@ class SpipArchiver extends AbstractArchiver implements ArchiverInterface
 				if ($archive) {
 					$retour = false;
 					if (1 === $archive->open($this->fichier_archive, 'creation')) {
+						// On établit la liste des fichiers en traitant éventuels les répertoires.
+						$fichiers = [];
+						foreach ($chemins as $chemin) {
+							if (is_dir($chemin)) {
+								$iterateur_dossier = new RecursiveIteratorIterator(
+								    new RecursiveDirectoryIterator($chemin),
+								    RecursiveIteratorIterator::LEAVES_ONLY
+								);
+								foreach ($iterateur_dossier as $fichier) {
+									if (!in_array($fichier->getFilename(), ['.', '..', '.ok'])) {
+										$fichiers[] = $fichier->getPathname();
+									}
+								}
+							} else {
+								$fichiers[] = $chemin;
+							}
+						}
+
 						$retour = $archive->compress($source, $fichiers);
+
+						// Ajout d'un commentaire si spécifié
+						if (
+							$retour
+							and !is_null($meta)
+						) {
+							$archive->setMeta($meta);
+						}
+
 						$archive->close();
 					}
 					$this->setErreur(intval(!$retour));
