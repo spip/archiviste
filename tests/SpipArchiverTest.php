@@ -68,6 +68,7 @@ class SpipArchiverTest extends TestCase
                 [
                     'proprietes' => [],
                     'fichiers' => [],
+                    'commentaire' => '',
                 ],
                 '',
                 '',
@@ -77,6 +78,7 @@ class SpipArchiverTest extends TestCase
                 [
                     'proprietes' => [],
                     'fichiers' => [],
+                    'commentaire' => '',
                 ],
                 __DIR__ . '/../var/tmp/file.unknown',
                 '',
@@ -86,6 +88,7 @@ class SpipArchiverTest extends TestCase
                 [
                     'proprietes' => [],
                     'fichiers' => [],
+                    'commentaire' => '',
                 ],
                 __DIR__ . '/../var/tmp/file.unknown',
                 'exotic',
@@ -102,6 +105,7 @@ class SpipArchiverTest extends TestCase
                             'size' => 16,
                         ],
                     ],
+                    'commentaire' => ''
                 ],
                 __DIR__ . '/../var/tmp/test.zip',
                 '',
@@ -118,6 +122,7 @@ class SpipArchiverTest extends TestCase
                             'size' => 16,
                         ],
                     ],
+                    'commentaire' => ''
                 ],
                 __DIR__ . '/../var/tmp/tar/test.tar',
                 '',
@@ -134,6 +139,7 @@ class SpipArchiverTest extends TestCase
                             'size' => 16,
                         ],
                     ],
+                    'commentaire' => ''
                 ],
                 __DIR__ . '/../var/tmp/tgz/test.tar.gz',
                 '',
