@@ -98,12 +98,17 @@ abstract class AbstractArchiver implements ArchiverInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	abstract public function emballer(array $fichiers = [], ?string $racine = null, ?string $meta = null): bool;
+	abstract public function emballer(array $fichiers = [], ?string $racine = null): bool;
 
 	/**
 	 * {@inheritDoc}
 	 */
 	abstract public function retirer(array $fichiers = []): bool;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	abstract public function commenter(string $texte = ''): bool;
 
 	/**
 	 * Définir la dernière erreur produite.
