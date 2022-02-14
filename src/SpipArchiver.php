@@ -24,7 +24,7 @@ class SpipArchiver extends AbstractArchiver implements ArchiverInterface
 				 * raw
 				 */
 			],
-			'meta' => ''
+			'commentaire' => ''
 		];
 
 		$archive = $this->archiveEnLecture();
@@ -37,7 +37,7 @@ class SpipArchiver extends AbstractArchiver implements ArchiverInterface
 
 			$liste['fichiers'] = $archive->list();
 			$liste['proprietes']['racine'] = $this->trouverRacine(array_column($liste['fichiers'], 'filename'));
-			$liste['meta'] = $archive->getComment();
+			$liste['commentaire'] = $archive->getComment();
 			$archive->close();
 		}
 
