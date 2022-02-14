@@ -2,9 +2,6 @@
 
 namespace Spip\Archiver;
 
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-
 /**
  * {@inheritDoc}
  * Implémentation des méthodes principales.
@@ -94,23 +91,8 @@ class SpipArchiver extends AbstractArchiver implements ArchiverInterface
 					$retour = false;
 					if (1 === $archive->open($this->fichier_archive, 'creation')) {
 						// On établit la liste des fichiers en traitant éventuels les répertoires.
-						$fichiers = [];
-						foreach ($chemins as $chemin) {
-							if (is_dir($chemin)) {
-								$iterateur_dossier = new RecursiveIteratorIterator(
-								    new RecursiveDirectoryIterator($chemin),
-								    RecursiveIteratorIterator::LEAVES_ONLY
-								);
-								foreach ($iterateur_dossier as $fichier) {
-									if (!in_array($fichier->getFilename(), ['.', '..', '.ok'])) {
-										$fichiers[] = $fichier->getPathname();
-									}
-								}
-							} else {
-								$fichiers[] = $chemin;
-							}
-						}
-
+						$fichiers = $this->listerFichiers($chemins);
+						// On archive la liste des fichiers
 						$retour = $archive->compress($source, $fichiers);
 						$archive->close();
 					}

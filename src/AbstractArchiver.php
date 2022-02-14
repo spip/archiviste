@@ -2,6 +2,11 @@
 
 namespace Spip\Archiver;
 
+use FilesystemIterator;
+use CallbackFilterIterator;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+
 /**
  * {@inheritDoc}
  * Gestion des erreurs.
@@ -38,6 +43,9 @@ abstract class AbstractArchiver implements ArchiverInterface
 		7 => 'fichier_inaccessible_en_lecture',
 		8 => 'tentative_de_vidage_du_fichier',
 	];
+
+	/** @var array liste des fichiers à exclure de l'archive */
+	protected array $fichiers_ignores = ['.ok'];
 
 	/**
 	 * Constructeur de base.
@@ -259,5 +267,33 @@ abstract class AbstractArchiver implements ArchiverInterface
 		}
 
 		return $racine;
+	}
+
+	protected function listerFichiers(array $chemins): array {
+		$fichiers = [];
+
+		foreach ($chemins as $chemin) {
+			if (is_dir($chemin)) {
+				$iterateur_dossier = new CallbackFilterIterator(
+					new RecursiveIteratorIterator(
+						new RecursiveDirectoryIterator($chemin, FilesystemIterator::SKIP_DOTS),
+					),
+					function ($current, $key, $iterator) {
+						if (in_array($current->getFilename(), $this->fichiers_ignores)) {
+							return false;
+						}
+
+						return true;
+					}
+				);
+				foreach ($iterateur_dossier as $fichier) {
+					$fichiers[] = $fichier->getPathname();
+				}
+			} else {
+				$fichiers[] = $chemin;
+			}
+		}
+
+		return $fichiers;
 	}
 }
