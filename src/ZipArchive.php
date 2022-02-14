@@ -93,14 +93,14 @@ class ZipArchive implements ArchiveInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setMeta(string $meta): bool {
-		return $this->zip->setArchiveComment($meta);
+	public function setComment(string $text): bool {
+		return $this->zip->setArchiveComment($text);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getMeta() {
+	public function getComment() {
 		return $this->zip->getArchiveComment();
 	}
 }

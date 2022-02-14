@@ -54,7 +54,7 @@ interface ArchiverInterface
 	 *
 	 * @return bool Succès de l'opération
 	 */
-	public function emballer(array $fichiers = [], ?string $racine = null, ?string $meta = null): bool;
+	public function emballer(array $fichiers = [], ?string $racine = null): bool;
 
 	/**
 	 * Retirer une liste de fichiers dans le fichier d'archive.
@@ -64,4 +64,13 @@ interface ArchiverInterface
 	 * @return bool Succès de l'opération
 	 */
 	public function retirer(array $fichiers = []): bool;
+
+	/**
+	 * Associer un commentaire à l'archive.
+	 *
+	 * @param string $texte Texte du commentaire à associer à l'archive
+	 *
+	 * @return bool Succès de l'opération
+	 */
+	public function commenter(string $texte = ''): bool;
 }

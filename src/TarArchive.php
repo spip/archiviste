@@ -103,14 +103,14 @@ class TarArchive implements ArchiveInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setMeta(string $meta): bool {
+	public function setComment(string $meta): bool {
 		return true;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getMeta() {
+	public function getComment() {
 		return '';
 	}
 }

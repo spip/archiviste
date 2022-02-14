@@ -54,10 +54,10 @@ interface ArchiveInterface
 	/**
 	 * Associer un commentaire à l'archive
 	 */
-	public function setMeta(string $meta): bool;
+	public function setComment(string $meta): bool;
 
 	/**
 	 * Lire le commentaire associé à l'archive si il existe
 	 */
-	public function getMeta();
+	public function getComment();
 }

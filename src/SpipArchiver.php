@@ -40,7 +40,7 @@ class SpipArchiver extends AbstractArchiver implements ArchiverInterface
 
 			$liste['fichiers'] = $archive->list();
 			$liste['proprietes']['racine'] = $this->trouverRacine(array_column($liste['fichiers'], 'filename'));
-			$liste['meta'] = $archive->getMeta();
+			$liste['meta'] = $archive->getComment();
 			$archive->close();
 		}
 
@@ -112,15 +112,6 @@ class SpipArchiver extends AbstractArchiver implements ArchiverInterface
 						}
 
 						$retour = $archive->compress($source, $fichiers);
-
-						// Ajout d'un commentaire si spécifié
-						if (
-							$retour
-							and !is_null($meta)
-						) {
-							$archive->setMeta($meta);
-						}
-
 						$archive->close();
 					}
 					$this->setErreur(intval(!$retour));
@@ -175,5 +166,28 @@ class SpipArchiver extends AbstractArchiver implements ArchiverInterface
 		$this->setErreur(3);
 
 		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function commenter(string $texte = ''): bool {
+
+		$retour = false;
+
+		if ($texte) {
+			$archive = $this->getArchive();
+			if ($archive) {
+				if (1 === $archive->open($this->fichier_archive, 'retrait')) {
+					$archive->setComment($texte);
+					$archive->close();
+				}
+				$this->setErreur(0);
+
+				return true;
+			}
+		}
+
+		return $retour;
 	}
 }
