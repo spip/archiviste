@@ -121,7 +121,7 @@ class SpipArchiver extends AbstractArchiver implements ArchiverInterface
 				if ('' !== $this->mimeType()) {
 					$archive = $this->getArchive();
 					if ($archive) {
-						if (1 === $archive->open($this->fichier_archive, 'retrait')) {
+						if (1 === $archive->open($this->fichier_archive, 'edition')) {
 							// Vérifier qu'on ne cherche pas à vider l'archive
 							$reste = $this->informer();
 							$fichiers_restants = array_column($reste['fichiers'], 'filename');
@@ -160,7 +160,7 @@ class SpipArchiver extends AbstractArchiver implements ArchiverInterface
 		if ($texte) {
 			$archive = $this->getArchive();
 			if ($archive) {
-				if (1 === $archive->open($this->fichier_archive, 'retrait')) {
+				if (1 === $archive->open($this->fichier_archive, 'edition')) {
 					$archive->setComment($texte);
 					$archive->close();
 				}
