@@ -14,7 +14,7 @@ class ZipArchive implements ArchiveInterface
 	private array $modes = [
 		'lecture' => \ZipArchive::RDONLY,
 		'creation' => \ZipArchive::CREATE,
-		'retrait' => 0,
+		'edition' => 0,
 	];
 
 	/**
