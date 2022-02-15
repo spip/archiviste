@@ -22,12 +22,20 @@ class SpipArchiverTest extends TestCase
         @mkdir(__DIR__ . '/../var/tmp/directory');
         @file_put_contents(__DIR__ . '/../var/tmp/directory/test.txt', 'contenu de test');
 
-
+        // setup Zip
         $test_retirer_zip = new \ZipArchive();
         $test_retirer_zip->open(__DIR__ . '/../var/tmp/retirer.zip', \ZipArchive::CREATE);
         $test_retirer_zip->addFromString('test.txt', 'contenu de test');
         $test_retirer_zip->addFromString('sub_directory/test2.txt', 'contenu de test2');
         $test_retirer_zip->close();
+
+        $test_commenter_zip = new \ZipArchive();
+        $test_commenter_zip->open(__DIR__ . '/../var/tmp/commenter.zip', \ZipArchive::CREATE);
+        $test_commenter_zip->addFromString('test.txt', 'contenu de test');
+        $test_commenter_zip->setArchiveComment('A beautiful comment');
+        $test_commenter_zip->close();
+
+        // setup Tar
         @mkdir(__DIR__ . '/../var/tmp/tar/directory');
         @file_put_contents(__DIR__ . '/../var/tmp/tar/directory/test.txt', 'contenu de test');
         @mkdir(__DIR__ . '/../var/tmp/tar/directory/sub_directory');
@@ -58,6 +66,7 @@ class SpipArchiverTest extends TestCase
         @unlink(__DIR__ . '/../var/tmp/tar/emballer.tar');
         @unlink(__DIR__ . '/../var/tmp/retirer.zip');
         @unlink(__DIR__ . '/../var/tmp/tar/retirer.tar');
+        @unlink(__DIR__ . '/../var/tmp/commenter.zip');
     }
 
     public function dataInformer()
@@ -108,6 +117,23 @@ class SpipArchiverTest extends TestCase
                     'commentaire' => ''
                 ],
                 __DIR__ . '/../var/tmp/test.zip',
+                '',
+            ],
+            'zip-with-comment' => [
+                0,
+                [
+                    'proprietes' => [
+                        'racine' => '',
+                    ],
+                    'fichiers' => [
+                        [
+                            'filename' => 'test.txt',
+                            'size' => 15,
+                        ],
+                    ],
+                    'commentaire' => 'A beautiful comment'
+                ],
+                __DIR__ . '/../var/tmp/commenter.zip',
                 '',
             ],
             'tar' => [
@@ -330,4 +356,67 @@ class SpipArchiverTest extends TestCase
         $this->assertEquals($expected, $actual, 'remove ok');
         $this->assertEquals($expectedErreur, $archiver->erreur(), 'error code');
     }
+
+    public function dataCommenter()
+    {
+        return [
+            'zip' => [
+                true,
+                0,
+                [
+                    'proprietes' => [
+                        'racine' => '',
+                    ],
+                    'fichiers' => [
+                        [
+                            'filename' => 'test.txt',
+                            'size' => 15,
+                        ],
+                    ],
+                    'commentaire' => 'A beautiful comment'
+                ],
+                __DIR__ . '/../var/tmp/commenter.zip',
+                'zip',
+                'A beautiful comment',
+            ],
+            'zip-edit' => [
+                true,
+                0,
+                [
+                    'proprietes' => [
+                        'racine' => '',
+                    ],
+                    'fichiers' => [
+                        [
+                            'filename' => 'test.txt',
+                            'size' => 15,
+                        ],
+                    ],
+                    'commentaire' => 'An edited comment'
+                ],
+                __DIR__ . '/../var/tmp/commenter.zip',
+                'zip',
+                'An edited comment',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataCommenter
+     */
+    public function testCommenter($expected, $expectedErreur, $expectedInformer, $file, $extension, $comment)
+    {
+        // Given
+        $archiver = new SpipArchiver($file, $extension);
+
+        // When
+        $actual = $archiver->commenter($comment);
+
+        //Then
+        $this->assertEquals($expected, $actual, 'comment ok');
+        $this->assertEquals($expectedErreur, $archiver->erreur(), 'error code ok');
+        $this->assertEquals($expectedInformer, $archiver->informer(), 'error informer ok');
+    }
+
+    
 }
