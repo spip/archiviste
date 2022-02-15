@@ -13,8 +13,11 @@ use RecursiveIteratorIterator;
  */
 abstract class AbstractArchiver implements ArchiverInterface
 {
-	/** @var array<string, string> Mode de compression connus */
+	/** @var array<string, string> Mode de compression connus, d’après mime-type */
 	protected const COMPRESSIONS_CONNUES = ['zip' => 'zip', 'x-tar' => 'tar', 'gzip' => 'tgz'];
+
+	/** @var array<string, string> Mode de compression connus, sur raw mime-type */
+	protected const COMPRESSIONS_CONNUES_RAW = ['Zip archive data' => 'zip'];
 
 	/** @var int Dernier code d'erreur */
 	protected int $code_erreur = 0;
@@ -139,9 +142,10 @@ abstract class AbstractArchiver implements ArchiverInterface
 		$file_mime_type = '';
 
 		if (file_exists($this->fichier_archive)) {
-			$finfo = finfo_open(FILEINFO_MIME);
+			$finfo = finfo_open(\FILEINFO_MIME);
 			if ($finfo) {
 				$file_mime_type = (string) finfo_file($finfo, $this->fichier_archive) ?: '';
+				$file_mime_type_raw = (string) finfo_file($finfo, $this->fichier_archive, \FILEINFO_RAW) ?: '';
 				finfo_close($finfo);
 			}
 
@@ -150,10 +154,18 @@ abstract class AbstractArchiver implements ArchiverInterface
 				&& in_array($matches[1], array_keys(self::COMPRESSIONS_CONNUES))
 			) {
 				$this->mode_compression = self::COMPRESSIONS_CONNUES[$matches[1]];
-			} else {
-				$this->setErreur(2);
-				$file_mime_type = '';
+				return $file_mime_type;
 			}
+
+			foreach (self::COMPRESSIONS_CONNUES_RAW as $term => $mode_compression) {
+				if (false !== stripos($file_mime_type_raw, $term)) {
+					$this->mode_compression = $mode_compression;
+					return $file_mime_type;
+				}
+			}
+
+			$this->setErreur(2);
+			$file_mime_type = '';
 		}
 
 		return $file_mime_type;
