@@ -418,5 +418,4 @@ class SpipArchiverTest extends TestCase
         $this->assertEquals($expectedInformer, $archiver->informer(), 'error informer ok');
     }
 
-    
 }
