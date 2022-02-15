@@ -72,7 +72,7 @@ class SpipArchiver extends AbstractArchiver implements ArchiverInterface
 	/**
 	 * {@inheritDoc}
 	 */
-	public function emballer(array $chemins = [], ?string $racine = null, ?string $meta = null): bool {
+	public function emballer(array $chemins = [], ?string $racine = null): bool {
 		$source = is_null($racine) ? ($this->trouverRacine($chemins) ?: '.') : $racine;
 
 		if (!(is_dir($source) && is_readable($source))) {
