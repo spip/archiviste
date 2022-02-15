@@ -182,6 +182,30 @@ abstract class AbstractArchiver implements ArchiverInterface
 		return $archive;
 	}
 
+
+	/**
+	 * Vérifier que le fichier d'archive est accessible en écriture.
+	 */
+	protected function archiveEnEcriture(): ?ArchiveInterface {		
+		$archive = null;
+
+		if (file_exists($this->fichier_archive)) {
+			if (!is_writable($this->fichier_archive)) {
+				$this->setErreur(4);
+			} else {
+				if ('' === $this->mode_compression) {
+					$this->mimeType();
+				}
+
+				$archive = $this->getArchive();
+			}
+		} else {
+			$this->setErreur(3);
+		}
+
+		return $archive;
+	}
+
 	/**
 	 * Fournir un objet Archive en fonction du mode de compression.
 	 */

@@ -116,36 +116,24 @@ class SpipArchiver extends AbstractArchiver implements ArchiverInterface
 	 * {@inheritDoc}
 	 */
 	public function retirer(array $fichiers = []): bool {
-		if (file_exists($this->fichier_archive)) {
-			if (is_writable($this->fichier_archive)) {
-				if ('' !== $this->mimeType()) {
-					$archive = $this->getArchive();
-					if ($archive) {
-						if (1 === $archive->open($this->fichier_archive, 'edition')) {
-							// Vérifier qu'on ne cherche pas à vider l'archive
-							$reste = $this->informer();
-							$fichiers_restants = array_column($reste['fichiers'], 'filename');
-							if (0 === count(array_diff($fichiers_restants, $fichiers))) {
-								$this->setErreur(8);
+		$archive = $this->archiveEnEcriture();
+		if ($archive) {
+			if (1 === $archive->open($this->fichier_archive, 'edition')) {
+				// Vérifier qu'on ne cherche pas à vider l'archive
+				$reste = $this->informer();
+				$fichiers_restants = array_column($reste['fichiers'], 'filename');
+				if (0 === count(array_diff($fichiers_restants, $fichiers))) {
+					$this->setErreur(8);
 
-								return false;
-							}
-							$retour = $archive->remove($fichiers);
-							$archive->close();
-						}
-						$this->setErreur(0);
-
-						return true;
-					}
+					return false;
 				}
+				$retour = $archive->remove($fichiers);
+				$archive->close();
 			}
+			$this->setErreur(0);
 
-			$this->setErreur(4);
-
-			return false;
+			return true;
 		}
-
-		$this->setErreur(3);
 
 		return false;
 	}
@@ -154,28 +142,16 @@ class SpipArchiver extends AbstractArchiver implements ArchiverInterface
 	 * {@inheritDoc}
 	 */
 	public function commenter(string $texte = ''): bool {
-		if (file_exists($this->fichier_archive)) {
-			if (is_writable($this->fichier_archive)) {
-				if ('' !== $this->mimeType()) {
-					$archive = $this->getArchive();
-					if ($archive) {
-						if (1 === $archive->open($this->fichier_archive, 'edition')) {
-							$archive->setComment($texte);
-							$archive->close();
-						}
-						$this->setErreur(0);
-
-						return true;
-					}
-				}
+		$archive = $this->archiveEnEcriture();
+		if ($archive) {
+			if (1 === $archive->open($this->fichier_archive, 'edition')) {
+				$archive->setComment($texte);
+				$archive->close();
 			}
+			$this->setErreur(0);
 
-			$this->setErreur(4);
-
-			return false;
+			return true;
 		}
-
-		$this->setErreur(3);
 
 		return false;
 	}
