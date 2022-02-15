@@ -154,22 +154,29 @@ class SpipArchiver extends AbstractArchiver implements ArchiverInterface
 	 * {@inheritDoc}
 	 */
 	public function commenter(string $texte = ''): bool {
+		if (file_exists($this->fichier_archive)) {
+			if (is_writable($this->fichier_archive)) {
+				if ('' !== $this->mimeType()) {
+					$archive = $this->getArchive();
+					if ($archive) {
+						if (1 === $archive->open($this->fichier_archive, 'edition')) {
+							$archive->setComment($texte);
+							$archive->close();
+						}
+						$this->setErreur(0);
 
-		$retour = false;
-
-		if ($texte) {
-			$archive = $this->getArchive();
-			if ($archive) {
-				if (1 === $archive->open($this->fichier_archive, 'edition')) {
-					$archive->setComment($texte);
-					$archive->close();
+						return true;
+					}
 				}
-				$this->setErreur(0);
-
-				return true;
 			}
+
+			$this->setErreur(4);
+
+			return false;
 		}
 
-		return $retour;
+		$this->setErreur(3);
+
+		return false;
 	}
 }
