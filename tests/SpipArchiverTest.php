@@ -35,6 +35,12 @@ class SpipArchiverTest extends TestCase
         $test_commenter_zip->setArchiveComment('A beautiful comment');
         $test_commenter_zip->close();
 
+        $test_commenter_zip2 = new \ZipArchive();
+        $test_commenter_zip2->open(__DIR__ . '/../var/tmp/commenter2.zip', \ZipArchive::CREATE);
+        $test_commenter_zip2->addFromString('test.txt', 'contenu de test');
+        $test_commenter_zip2->setArchiveComment('A beautiful comment');
+        $test_commenter_zip2->close();
+
         // setup Tar
         @mkdir(__DIR__ . '/../var/tmp/tar/directory');
         @file_put_contents(__DIR__ . '/../var/tmp/tar/directory/test.txt', 'contenu de test');
@@ -67,6 +73,7 @@ class SpipArchiverTest extends TestCase
         @unlink(__DIR__ . '/../var/tmp/retirer.zip');
         @unlink(__DIR__ . '/../var/tmp/tar/retirer.tar');
         @unlink(__DIR__ . '/../var/tmp/commenter.zip');
+        @unlink(__DIR__ . '/../var/tmp/commenter2.zip');
     }
 
     public function dataInformer()
@@ -133,8 +140,8 @@ class SpipArchiverTest extends TestCase
                     ],
                     'commentaire' => 'A beautiful comment'
                 ],
-                __DIR__ . '/../var/tmp/commenter.zip',
-                '',
+                __DIR__ . '/../var/tmp/commenter2.zip',
+                'zip',
             ],
             'tar' => [
                 0,
