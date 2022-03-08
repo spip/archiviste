@@ -11,11 +11,16 @@ class ZipArchive implements ArchiveInterface
 	protected \ZipArchive $zip;
 
 	/** @var array<string, int> Paramètre à passer à \ZipArchive pour respecter le mode */
-	private array $modes = [
-		'lecture' => \ZipArchive::RDONLY,
-		'creation' => \ZipArchive::CREATE,
-		'edition' => 0,
-	];
+	private array $modes = [];
+
+	public function __construct() {
+		// Si ext-zip est compilée avec une version <=1.0.0 ...
+		$this->modes = [
+			'lecture' => defined('\ZipArchive::RDONLY') ? \ZipArchive::RDONLY : 0,
+			'creation' => defined('\ZipArchive::CREATE') ? \ZipArchive::CREATE : 0,
+			'edition' => 0,
+		];
+	}
 
 	/**
 	 * {@inheritDoc}
