@@ -198,7 +198,7 @@ abstract class AbstractArchiver implements ArchiverInterface
 	/**
 	 * Vérifier que le fichier d'archive est accessible en écriture.
 	 */
-	protected function archiveEnEcriture(): ?ArchiveInterface {		
+	protected function archiveEnEcriture(): ?ArchiveInterface {
 		$archive = null;
 
 		if (file_exists($this->fichier_archive)) {
