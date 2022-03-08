@@ -52,12 +52,14 @@ interface ArchiveInterface
 	public function close(): bool;
 
 	/**
-	 * Associer un commentaire à l'archive
+	 * Associer un commentaire à l'archive.
 	 */
-	public function setComment(string $meta): bool;
+	public function setComment(string $comment): bool;
 
 	/**
-	 * Lire le commentaire associé à l'archive si il existe
+	 * Lire le commentaire associé à l'archive si il existe.
+	 *
+	 * @return string
 	 */
 	public function getComment();
 }

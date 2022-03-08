@@ -50,7 +50,6 @@ interface ArchiverInterface
 	 *
 	 * @param array<mixed> $fichiers Liste des fichiers à ajouter ou modifier
 	 * @param string|null  $racine Repertoire racine des fichiers a retirer du chemin lorsqu'on zip
-	 * @param string|null  $meta Commentaire à associer à l'archive
 	 *
 	 * @return bool Succès de l'opération
 	 */
