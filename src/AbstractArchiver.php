@@ -47,7 +47,7 @@ abstract class AbstractArchiver implements ArchiverInterface
 		8 => 'tentative_de_vidage_du_fichier',
 	];
 
-	/** @var array liste des fichiers à exclure de l'archive */
+	/** @var string[] liste des fichiers à exclure de l'archive */
 	protected array $fichiers_ignores = ['.ok'];
 
 	/**
@@ -140,6 +140,7 @@ abstract class AbstractArchiver implements ArchiverInterface
 	 */
 	protected function mimeType(): string {
 		$file_mime_type = '';
+		$file_mime_type_raw = '';
 
 		if (file_exists($this->fichier_archive)) {
 			$finfo = finfo_open(\FILEINFO_MIME);
@@ -305,6 +306,12 @@ abstract class AbstractArchiver implements ArchiverInterface
 		return $racine;
 	}
 
+	/**
+	 * Scanner les dossiers.
+	 *
+	 * @param string[] $chemins
+	 * @return string[]
+	 */
 	protected function listerFichiers(array $chemins): array {
 		$fichiers = [];
 
@@ -315,11 +322,7 @@ abstract class AbstractArchiver implements ArchiverInterface
 						new RecursiveDirectoryIterator($chemin, FilesystemIterator::SKIP_DOTS),
 					),
 					function ($current, $key, $iterator) {
-						if (in_array($current->getFilename(), $this->fichiers_ignores)) {
-							return false;
-						}
-
-						return true;
+						return !in_array($current->getFilename(), $this->fichiers_ignores);
 					}
 				);
 				foreach ($iterateur_dossier as $fichier) {
