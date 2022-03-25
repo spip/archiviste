@@ -3,7 +3,7 @@
 	categorie="outil"
 	version="2.1.1"
 	etat="stable"
-	compatibilite="[4.1.0-beta;4.2.*]"
+	compatibilite="[4.1.0;4.2.*]"
 	logo="prive/themes/spip/images/archiviste.svg"
 	documentation=""
 >
