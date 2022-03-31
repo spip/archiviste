@@ -1,4 +1,7 @@
 {
+    "name": "spip/archiviste",
+    "description": "Gérer des archives de fichiers Zip, Tar, ...",
+    "license": "GPL-3.0-or-later",
     "autoload": {
         "psr-4": {
             "Spip\\Archiver\\": "src/"
@@ -28,6 +31,11 @@
         },
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.2.x-dev"
         }
     }
 }
