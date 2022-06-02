@@ -4,4 +4,4 @@
 
 ## Added
 
-- Fichiers `README.md` et `CHANGELOG.md`
+- Fichier `README.md`
